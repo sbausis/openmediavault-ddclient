@@ -39,8 +39,8 @@ login=$(omv_config_get "//services/ddclient/dusername")
 password=$(omv_config_get "//services/ddclient/dpassword")
 $(omv_config_get "//services/ddclient/dhostname")
 
-ssl=yes
-wildcard=YES
+ssl=$( if [ `omv_config_get "//services/ddclient/dssl"` = "1" ]; then echo "yes"; else echo "no"; fi)
+wildcard=$( if [ `omv_config_get "//services/ddclient/dwildcard"` = "1" ]; then echo "yes"; else echo "no"; fi)
 use=web, web=checkip.dyndns.com/, web-skip='IP Address'
 EOF
 

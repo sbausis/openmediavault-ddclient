@@ -33,25 +33,26 @@ fi
 #
 # /etc/ddclient.conf
 
-protocol=dyndns2
-server=members.dyndns.org
+cache=/etc/ddclient/ddclient.cache
+ssl=$( if [ `omv_config_get "//services/ddclient/dssl"` = "1" ]; then echo "yes"; else echo "no"; fi)
+use=web, web=checkip.dyndns.com/, web-skip='IP Address'
 login=$(omv_config_get "//services/ddclient/dusername")
 password=$(omv_config_get "//services/ddclient/dpassword")
-$(omv_config_get "//services/ddclient/dhostname")
-
-ssl=$( if [ `omv_config_get "//services/ddclient/dssl"` = "1" ]; then echo "yes"; else echo "no"; fi)
+protocol=dyndns2
+server=members.dyndns.org
 wildcard=$( if [ `omv_config_get "//services/ddclient/dwildcard"` = "1" ]; then echo "yes"; else echo "no"; fi)
-use=web, web=checkip.dyndns.com/, web-skip='IP Address'
+$(omv_config_get "//services/ddclient/dhostname")
 EOF
 
     else
         cat <<EOF > ${DDCLIENT_CONF}
-protocol=dyndns2
-server=dynupdate.no-ip.com
+cache=/etc/ddclient/ddclient.cache
+use=web, web=checkip.dyndns.com/, web-skip='IP Address'
 login=$(omv_config_get "//services/ddclient/nusername")
 password=$(omv_config_get "//services/ddclient/npassword")
+protocol=dyndns2
+server=dynupdate.no-ip.com
 $(omv_config_get "//services/ddclient/nhostname")
-use=web, web=checkip.dyndns.com/, web-skip='IP Address'
 EOF
 
     fi

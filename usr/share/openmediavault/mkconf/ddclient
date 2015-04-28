@@ -23,9 +23,7 @@ set -e
 SERVICE="ddclient"
 CONF_DIR="/etc/${SERVICE}"
 DDCLIENT_CONF="/etc/${SERVICE}/${SERVICE}.conf"
-DDCLIENT_DEFAULT="/etc/default/${SERVICE}"
 CACHE_DIR="/var/cache/${SERVICE}"
-PID_DIR="/var/run/${SERVICE}"
 
 if [ "$(omv_config_get "//services/ddclient/enable")" != "1" ]; then
     exit 0
@@ -44,11 +42,6 @@ fi
 # if [ -f "${CACHE_DIR}/${SERVICE}.cache" ]; then
 #        cp /dev/null "${CACHE_DIR}/${SERVICE}.cache"
 # fi
-
-if [ ! -d "${PID_DIR}" ]; then
-        mkdir -p "${PID_DIR}"
-        chmod 755 "${PID_DIR}"
-fi
 
     if [ `omv_config_get "//services/ddclient/ddns_type"` = "d" ]; then
         cat <<EOF > ${DDCLIENT_CONF}

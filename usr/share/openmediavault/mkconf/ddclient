@@ -20,11 +20,34 @@ set -e
 . /etc/default/openmediavault
 . /usr/share/openmediavault/scripts/helper-functions
 
-DDCLIENT_CONF="/etc/ddclient.conf"
-DDCLIENT_DEFAULT="/etc/default/ddclient"
+SERVICE="ddclient"
+CONF_DIR="/etc/${SERVICE}"
+DDCLIENT_CONF="/etc/${SERVICE}/${SERVICE}.conf"
+DDCLIENT_DEFAULT="/etc/default/${SERVICE}"
+CACHE_DIR="/var/cache/${SERVICE}"
+PID_DIR="/var/run/${SERVICE}"
 
 if [ "$(omv_config_get "//services/ddclient/enable")" != "1" ]; then
     exit 0
+fi
+
+if [ ! -d "${CONF_DIR}" ]; then
+        mkdir -p "${CONF_DIR}"
+        chmod 755 "${CONF_DIR}"
+fi
+
+if [ ! -d "${CACHE_DIR}" ]; then
+        mkdir -p "${CACHE_DIR}"
+        chmod 755 "${CACHE_DIR}"
+fi
+
+# if [ -f "${CACHE_DIR}/${SERVICE}.cache" ]; then
+#        cp /dev/null "${CACHE_DIR}/${SERVICE}.cache"
+# fi
+
+if [ ! -d "${PID_DIR}" ]; then
+        mkdir -p "${PID_DIR}"
+        chmod 755 "${PID_DIR}"
 fi
 
     if [ `omv_config_get "//services/ddclient/ddns_type"` = "d" ]; then
@@ -33,7 +56,7 @@ fi
 #
 # /etc/ddclient.conf
 
-cache=/etc/ddclient/ddclient.cache
+daemon="$(omv_config_get "//services/ddclient/seconds")"
 ssl=$( if [ `omv_config_get "//services/ddclient/dssl"` = "1" ]; then echo "yes"; else echo "no"; fi)
 use=web, web=checkip.dyndns.com/, web-skip='IP Address'
 login=$(omv_config_get "//services/ddclient/dusername")
@@ -46,7 +69,7 @@ EOF
 
     else
         cat <<EOF > ${DDCLIENT_CONF}
-cache=/etc/ddclient/ddclient.cache
+daemon="$(omv_config_get "//services/ddclient/seconds")"
 use=web, web=checkip.dyndns.com/, web-skip='IP Address'
 login=$(omv_config_get "//services/ddclient/nusername")
 password=$(omv_config_get "//services/ddclient/npassword")
@@ -57,24 +80,7 @@ EOF
 
     fi
 
-   cat <<EOF > ${DDCLIENT_DEFAULT}
-# Configuration for ddclient scripts 
-# generated from debconf on Fri Apr 24 12:46:47 EDT 2015
-#
-# /etc/default/ddclient
 
-# Set to "true" if ddclient should be run every time a new ppp connection is 
-# established. This might be useful, if you are using dial-on-demand.
-run_ipup="false"
-
-# Set to "true" if ddclient should run in daemon mode
-# If this is changed to true, run_ipup must be set to false.
-run_daemon="true"
-
-# Set the time interval between the updates of the dynamic DNS name in seconds.
-# This option only takes effect if the ddclient runs in daemon mode.
-daemon_interval="$(omv_config_get "//services/ddclient/seconds")"
-EOF
 
 
 

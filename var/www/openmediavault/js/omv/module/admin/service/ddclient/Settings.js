@@ -24,6 +24,7 @@
 // require("js/omv/data/Store.js")
 // require("js/omv/data/Model.js")
 // require("js/omv/data/proxy/Rpc.js")
+// require("js/omv/workspace/window/plugin/ConfigObject.js")
 
 /**
  * @class OMV.module.admin.service.ddclient.Settings
@@ -39,6 +40,16 @@ Ext.define("OMV.module.admin.service.ddclient.Settings", {
     plugins : [{
         ptype        : "linkedfields",
         correlations : [{
+            name        : [
+              "enable"
+            ],
+            conditions  : [
+                { name : "enable", value : true }
+            ],
+            properties : function(valid, field) {
+                this.setButtonDisabled("chkconf", !valid);
+            }
+        },{
             name       : [
                 "dyndns_fieldset"
             ],
@@ -59,6 +70,38 @@ Ext.define("OMV.module.admin.service.ddclient.Settings", {
         }]   
     }],
 
+
+    getButtonItems : function() {
+        var me = this;
+        var items = me.callParent(arguments);
+        items.push({
+            id       : me.getId() + "-chkconf",
+            xtype    : "button",
+            text     : _("Test Config"),
+            icon     : "images/bug.png",
+            iconCls  : Ext.baseCSSPrefix + "btn-icon-16x16",
+            disabled : true,
+            scope    : me,
+            handler  : Ext.Function.bind(me.onCheck, me, [ me ])
+        });
+        return items;
+    },
+
+    onCheck: function() {
+        var me = this;
+        var wnd = Ext.create("OMV.window.Execute", {
+            title           : _("Click start to test config ..."),
+            rpcService      : "DDclient",
+            rpcMethod       : "doCheck",
+            rpcIgnoreErrors : true,
+            hideStopButton  : true,
+            listeners       : {
+                scope       : me,
+                exception   : function(wnd, error) { OMV.MessageBox.error(null, error);}
+            }
+        });
+        wnd.show();
+    },
 
     getFormItems: function () {
         return [{
@@ -129,8 +172,7 @@ Ext.define("OMV.module.admin.service.ddclient.Settings", {
                     allowBlank    : false,
                     editable      : false,
                     triggerAction : 'all',
-                    value         : 'x',
-
+                    value         : 'x'
                 },{
                     xtype      : "checkbox",
                     name       : "dssl",

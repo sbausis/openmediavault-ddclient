@@ -5,6 +5,8 @@ License: GPL-3
 
 Files: /var/www/openmediavault/images/ddclient.png
        /var/www/openmediavault/images/ddclient.svg
+       /var/www/openmediavault/images/bug.png
+       /var/www/openmediavault/images/bug.svg
 Copyright: IcoMoon <http://www.icomoon.io>
 IcoMoon <http://www.icomoon.io>
 License: GPL / CC BY 4.0

@@ -6,7 +6,10 @@ License: GPL-3
 Files: /usr/sbin/ddclient
        /etc/init.d/ddclient
 ddclient http://sourceforge.net/p/ddclient/wiki/Home/
-Copyright (C) 2015  	 Paul Burry (paul@burry.ca)
+Copyright (C) 1999	Paul Burry (paul@burry.ca)
+Copyright (C) 2000	Paul Burry (paul@burry.ca)
+Copyright (C) 2001	Paul Burry (paul@burry.ca)
+License: GPL-2
 
 Files: /var/www/openmediavault/images/ddclient.png
        /var/www/openmediavault/images/ddclient.svg

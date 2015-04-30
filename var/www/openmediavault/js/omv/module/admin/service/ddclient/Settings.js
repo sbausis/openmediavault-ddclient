@@ -24,7 +24,6 @@
 // require("js/omv/data/Store.js")
 // require("js/omv/data/Model.js")
 // require("js/omv/data/proxy/Rpc.js")
-// require("js/omv/workspace/window/plugin/ConfigObject.js")
 
 /**
  * @class OMV.module.admin.service.ddclient.Settings

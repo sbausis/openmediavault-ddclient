@@ -24,6 +24,7 @@
 // require("js/omv/data/Store.js")
 // require("js/omv/data/Model.js")
 // require("js/omv/data/proxy/Rpc.js")
+// require("js/omv/workspace/window/plugin/ConfigObject.js")
 
 /**
  * @class OMV.module.admin.service.ddclient.Settings
@@ -47,6 +48,16 @@ Ext.define("OMV.module.admin.service.ddclient.Settings", {
             ],
             properties : function(valid, field) {
                 this.setButtonDisabled("chkconf", !valid);
+            }
+        },{
+            name        : [
+              "enable"
+            ],
+            conditions  : [
+                { name : "enable", value : true }
+            ],
+            properties : function(valid, field) {
+                this.setButtonDisabled("delcache", !valid);
             }
         },{
             name       : [
@@ -82,6 +93,28 @@ Ext.define("OMV.module.admin.service.ddclient.Settings", {
             disabled : true,
             scope    : me,
             handler  : Ext.Function.bind(me.onCheck, me, [ me ])
+        },{
+            id       : me.getId() + "-delcache",
+            xtype    : "button",
+            text     : _("Delete Cache"),
+            icon     : "images/delete.png",
+            iconCls  : Ext.baseCSSPrefix + "btn-icon-16x16",
+            disabled : true,
+            scope    : me,
+            handler  : function() {
+                // Execute RPC.
+                OMV.Rpc.request({
+                    scope       : this,
+                    callback    : function(id, success, response) {
+                        this.doRestart();
+                    },
+                    relayErrors : false,
+                    rpcData     : {
+                        service  : "DDclient",
+                        method   : "deleteCache"
+                    }
+                });
+            }
         });
         return items;
     },

@@ -54,6 +54,7 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
         $this->registerMethod("getSettings");
         $this->registerMethod("setSettings");
         $this->registerMethod("doCheck");
+        $this->registerMethod("deleteCache");
     }
 
     public function getSettings($params, $context)
@@ -171,13 +172,13 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
         return $object;
     }
 
-    public function doCheck($params, $context)
+    public function doCheck()
     {
 
         // Validate the RPC caller context.
-        $this->validateMethodContext($context, array(
-            "role" => OMV_ROLE_ADMINISTRATOR
-        ));
+        //$this->validateMethodContext($context, array(
+        //    "role" => OMV_ROLE_ADMINISTRATOR
+        //));
 
         // Create a background process.
         $bgStatusFilename = $this->createBgProcStatus();
@@ -198,7 +199,10 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
                 $bgOutputFilename
             );
 
-            $cmd = "/usr/sbin/ddclient -daemon=0 -debug -verbose -noquiet 2>&1";
+            $cmd = sprintf(
+                "export LANG=C; %s -daemon=0 -debug -verbose -noquiet 2>&1",
+                 $this->getPluginName()
+            );
             $this->exec($cmd, $output, $bgOutputFilename);
             $this->finalizeBgProcStatus($bgStatusFilename, $output);
 
@@ -208,6 +212,21 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
         }
     }
 
+    public function deleteCache()
+    {
+        $cmd = sprintf(
+            "export LANG=C; cp /dev/null /var/cache/%s/ddclient.cache 2>&1",
+            $this->getPluginName()
+        );
+
+        if ($this->exec($cmd, $output) !== 0) {
+            throw new OMVException(
+                OMVErrorMsg::E_EXEC_FAILED,
+                $cmd,
+                implode("\n", $output)
+            );
+        }
+    }
 }
 
 // Register the RPC service.

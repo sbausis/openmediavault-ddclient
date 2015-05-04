@@ -10,6 +10,6 @@ Package: openmediavault-ddclient
 Architecture: all
 Depends: ${misc:Depends},
          openmediavault (>= 1.0),
-         python,
+         perl,
          libio-socket-ssl-perl
 Description: DDclient plugin for OpenMediaVault.

@@ -174,7 +174,6 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
 
     public function doCheck()
     {
-
         // Validate the RPC caller context.
         //$this->validateMethodContext($context, array(
         //    "role" => OMV_ROLE_ADMINISTRATOR

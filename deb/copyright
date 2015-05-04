@@ -3,7 +3,7 @@ Upstream-Contact: OpenMediaVault Plugin Developers <plugins@omv-extras.org>
 Copyright: 2013-2015 OpenMediaVault Plugin Developers <plugins@omv-extras.org>
 License: GPL-3
 
-Files: /usr/sbin/ddclient
+Files: /usr/sbin/ddclient (ver. 3.8.2)
        /etc/init.d/ddclient
 Copyright (C) 1999	Paul Burry (paul@burry.ca)
 Copyright (C) 2000	Paul Burry (paul@burry.ca)

@@ -1,3 +1,9 @@
+openmediavault-ddclient (1.0.3) stable; urgency=low
+
+  * Fix dependencies
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Mon, 04 May 2015 13:32:21 -0500
+
 openmediavault-ddclient (1.0.2) stable; urgency=low
 
   * Fix typo

@@ -214,7 +214,8 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
     public function deleteCache()
     {
         $cmd = sprintf(
-            "export LANG=C; cp /dev/null /var/cache/%s/ddclient.cache 2>&1",
+            "export LANG=C; cp /dev/null /var/cache/%s/%s.cache 2>&1",
+            $this->getPluginName(),
             $this->getPluginName()
         );
 

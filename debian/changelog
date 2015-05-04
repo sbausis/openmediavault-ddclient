@@ -1,3 +1,9 @@
+openmediavault-ddclient (1.0.1) stable; urgency=low
+
+  * Fix install bug
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Mon, 04 May 2015 08:18:16 -0500
+
 openmediavault-ddclient (1.0) stable; urgency=low
 
   * Initial release

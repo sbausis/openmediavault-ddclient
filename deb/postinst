@@ -47,6 +47,10 @@ case "$1" in
             omv_config_add_element "${SERVICE_XPATH}" "nipcheck" "0"
             omv_config_add_element "${SERVICE_XPATH}" "seconds" "43200"
         fi
+        
+        if [ -x "/etc/init.d/ddclient" ]; then
+            update-rc.d ddclient defaults
+        fi
 
         dpkg-trigger update-fixperms
         dpkg-trigger update-locale

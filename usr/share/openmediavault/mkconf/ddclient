@@ -75,7 +75,4 @@ EOF
 
     fi
 
-
-
-
-
+chmod 600 ${DDCLIENT_CONF}

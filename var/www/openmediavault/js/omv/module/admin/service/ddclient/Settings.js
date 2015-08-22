@@ -48,15 +48,6 @@ Ext.define("OMV.module.admin.service.ddclient.Settings", {
             ],
             properties : function(valid, field) {
                 this.setButtonDisabled("chkconf", !valid);
-            }
-        },{
-            name        : [
-              "enable"
-            ],
-            conditions  : [
-                { name : "enable", value : true }
-            ],
-            properties : function(valid, field) {
                 this.setButtonDisabled("delcache", !valid);
             }
         },{

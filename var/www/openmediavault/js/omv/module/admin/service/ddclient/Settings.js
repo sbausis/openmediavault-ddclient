@@ -48,27 +48,50 @@ Ext.define("OMV.module.admin.service.ddclient.Settings", {
             ],
             properties : function(valid, field) {
                 this.setButtonDisabled("chkconf", !valid);
+            }
+        },{
+            name        : [
+              "enable"
+            ],
+            conditions  : [
+                { name : "enable", value : true }
+            ],
+            properties : function(valid, field) {
                 this.setButtonDisabled("delcache", !valid);
             }
         },{
             name       : [
                 "dyndns_fieldset"
             ],
-            conditions : [{
-                 name  : "ddns_type",
-                 value : "d"
-            }],
+            conditions : [
+                { name : "enable", value : true }
+            ],
             properties : "show"
         },{
-            name       : [
-                "noip_fieldset"
-            ],
-            conditions : [{
-                 name  : "ddns_type",
-                 value : "n"
-            }],
-            properties : "show"
-        }]   
+			name       : [
+			    "interface"
+			],
+			conditions : [
+			    { name : "ipcheck", value : false }
+			],
+			properties : "show"
+		},{
+			name       : [
+			    "type"
+			],
+			conditions : [
+			    { name : "server", value : "members.dyndns.org" }
+			],
+			properties : "show"
+		}/*,{
+			name       : [
+			    "mailfailure"
+			],
+			conditions : [
+			    { name : "mail", value : true }
+			],
+			properties : "show"
+		}*/]   
     }],
 
 
@@ -127,146 +150,157 @@ Ext.define("OMV.module.admin.service.ddclient.Settings", {
     },
 
     getFormItems: function () {
-        return [{
-            xtype : "fieldset",
-            title : _("General settings"),
-            items : [{
-                xtype      : "checkbox",
-                name       : "enable",
-                fieldLabel : _("Enable"),
-                checked    : false
-            },{
-                xtype      : "combo",
-                name       : "ddns_type",
-                fieldLabel : _("DDNS Service"),
-                mode       : 'local',
-                store      : new Ext.data.SimpleStore({
-                    fields : [ "value", "text" ],
-                    data   : [
-                     ['d', _('DynDNS')],
-                     ['n', _('No-IP free')]
-                    ]
-                }), 
-                displayField  : "text",
-                valueField    : "value",
-                allowBlank    : false,
-                editable      : false,
-                triggerAction : 'all',
-                value         : 'd',
-                selectOnFocus : true
-            },{
-                xtype          : "fieldset",
-                id             : "dyndns_fieldset",
-                title          : _("DynDNS Configuration"),
-                fieldDefaults  : {
-                    labelSeparator : ""
-                },
-                hidden         : true,
-                items          : [{
-                    xtype       : "textfield",
-                    name        : "dusername",
-                    fieldLabel  : _("Username"),
-                    allowBlank  : true
-                },{
-                    xtype       : "passwordfield",
-                    name        : "dpassword",
-                    fieldLabel  : _("Password"),
-                    allowBlank  : true
-                },{
-                    xtype       : "textfield",
-                    name        : "dhostname",
-                    fieldLabel  : _("Hostname"),
-                    allowBlank  : true
-                },{
-                    xtype      : "combo",
-                    name       : "dtype",
-                    fieldLabel : _("Type"),
-                    mode       : 'local',
-                    store      : new Ext.data.SimpleStore({
-                        fields : [ "value", "text" ],
-                        data   : [
-                            ['x', _('Dynamic')],
-                            ['y', _('Static')],
-                            ['z', _('Custom')]
-                        ]
-                    }), 
-                    displayField  : "text",
-                    valueField    : "value",
-                    allowBlank    : false,
-                    editable      : false,
-                    triggerAction : 'all',
-                    value         : 'x'
-                },{
-                    xtype      : "checkbox",
-                    name       : "dssl",
-                    fieldLabel : _("SSL"),
-                    checked    : false
-                },{
-                    xtype      : "checkbox",
-                    name       : "dwildcard",
-                    fieldLabel : _("Wildcard"),
-                    checked    : false
-                },{
-                    xtype      : "checkbox",
-                    name       : "dipcheck",
-                    fieldLabel : _("No External"),
-                    boxLabel   : _("If checked here there will be no external IP check."),
-                    checked    : false
-                }]
-            },{
-                xtype          : "fieldset",
-                id             : "noip_fieldset",
-                title          : _("No-IP free Configuration"),           
-                fieldDefaults  : {
-                    labelSeparator : ""
-                },
-                hidden         : true,
-                items          : [{
-                    xtype       : "textfield",
-                    name        : "nusername",
-                    fieldLabel  : _("Username"),
-                    allowBlank  : true
-                },{
-                    xtype       : "passwordfield",
-                    name        : "npassword",
-                    fieldLabel  : _("Password"),
-                    allowBlank  : true
-                },{
-                    xtype       : "textfield",
-                    name        : "nhostname",
-                    fieldLabel  : _("Hostname"),
-                    allowBlank  : true
-                },{
-                    xtype      : "checkbox",
-                    name       : "nipcheck",
-                    fieldLabel : _("No External"),
-                    boxLabel   : _("If checked here there will be no external IP check."),
-                    checked    : false
-                }]
-            },{
-                xtype           : "fieldset",
-                id              : "updateinterval",
-                title           : _("Update Interval"),
-                fieldDefaults   : {
-                    labelSeparator : ""
-                },
-                items            : [{
-                    xtype         : "numberfield",
-                    name          : "seconds",
-                    fieldLabel    : _("Seconds"),
-                    minValue      : 300,
-                    maxValue      : 2592000,
-                    allowDecimals : false,
-                    allowBlank    : false,
-                    editable      : true,
-                    value         : 43200,
-                    plugins : [{
-                        ptype : "fieldinfo",
-                        text  : _("Min=300 (5 minutes) Max=2592000 (30 days) Default=43200 (half-day)")
-                    }]
-                }]
-            }]
-        }];
+return [
+	{
+	xtype : "fieldset",
+	title : _("General settings"),
+	items : [{
+	    	xtype      : "checkbox",
+	    	name       : "enable",
+	    	fieldLabel : _("Enable"),
+	    	checked    : false
+		}, {
+			xtype      : "combo",
+			name       : "server",
+			fieldLabel : _("DDNS Server"),
+			mode       : 'local',
+			store      : new Ext.data.SimpleStore({
+			    fields : [ "value", "text" ],
+			    data   : [
+			     ['members.dyndns.org', _('DynDNS')],
+			     ['dynupdate.no-ip.com', _('No-IP free')],
+			     ['freedns.afraid.org', _('FreeDNS')]
+			    ]
+			}), 
+			displayField  : "text",
+			valueField    : "value",
+			allowBlank    : false,
+			editable      : false,
+			triggerAction : 'all',
+			value         : 'members.dyndns.org',
+			selectOnFocus : true
+        }, {
+			xtype      : "combo",
+			name       : "type",
+			fieldLabel : _("Type"),
+			mode       : 'local',
+			store      : new Ext.data.SimpleStore({
+			    fields : [ "value", "text" ],
+			    data   : [
+			        ['x', _('Dynamic')],
+			        ['y', _('Static')],
+			        ['z', _('Custom')]
+			    ]
+			}), 
+			displayField  : "text",
+			valueField    : "value",
+			allowBlank    : false,
+			editable      : false,
+			triggerAction : 'all',
+			value         : 'x'
+		}, {
+			xtype : "fieldset",
+			title : _("Login"),
+			items : [{
+				xtype       : "textfield",
+				name        : "username",
+				fieldLabel  : _("Username"),
+				allowBlank  : false
+			}, {
+				xtype       : "passwordfield",
+				name        : "password",
+				fieldLabel  : _("Password"),
+				allowBlank  : false
+			}, {
+				xtype       : "textfield",
+				name        : "hostname",
+				fieldLabel  : _("Hostname"),
+				allowBlank  : false
+			}]
+		}, {
+			xtype : "fieldset",
+			title : _("Settings"),
+			items : [{
+					xtype      : "checkbox",
+					name       : "ipcheck",
+					fieldLabel : _("WebCheck"),
+					boxLabel   : _("If checked, IP will be obtained from external IP-Check-Site."),
+					checked    : true
+				}, {
+					xtype         : "combo",
+					name          : "interface",
+					hiddenName    : "interface",
+					fieldLabel    : _("Network Interface"),
+					mode       	  : 'local',
+					emptyText     : _("none"),
+					value         : 'none',
+					allowBlank    : false,
+					editable      : false,
+					triggerAction : "all",
+					displayField  : "netif",
+					valueField    : "netif",
+					store         : Ext.create("OMV.data.Store", {
+					    autoLoad : true,
+					    model    : OMV.data.Model.createImplicit({
+					        idProperty  : "netif",
+					        fields      : [{ name : "netif", type : "string" }]
+					    }),
+					    proxy : {
+					        type : "rpc",
+					        rpcData : {
+					            service : "DDclient",
+					            method  : "getInterfaces"
+					        },
+					        appendSortParams : false
+					    },
+					    sorters : [{ direction : "ASC", property  : "netif"}]
+					})
+				}, {
+					xtype      : "checkbox",
+					name       : "ssl",
+					fieldLabel : _("SSL"),
+					checked    : true
+				}, {
+					xtype      : "checkbox",
+					name       : "wildcard",
+					fieldLabel : _("Wildcard"),
+					checked    : false
+				}, {
+		    		xtype         : "numberfield",
+		    		name          : "seconds",
+		    		fieldLabel    : _("Seconds"),
+		    		minValue      : 300,
+		    		maxValue      : 2592000,
+		    		allowDecimals : false,
+		    		allowBlank    : false,
+		    		editable      : true,
+		    		value         : 43200,
+		    		plugins : [{
+		    		    ptype : "fieldinfo",
+		    		    text  : _("Min=300 (5 minutes) Max=2592000 (30 days) Default=43200 (half-day)")
+		    		}]
+				}]
+		}, {
+			xtype : "fieldset",
+			title : _("Log"),
+			items : [{
+				xtype      : "checkbox",
+				name       : "syslog",
+				fieldLabel : _("Log Updates to Syslog"),
+				checked    : true
+			}, {
+				xtype      : "checkbox",
+				name       : "mail",
+				fieldLabel : _("Send Mail on Updates"),
+				checked    : false
+			}, {
+				xtype      : "checkbox",
+				name       : "mailfailure",
+				fieldLabel : _("Send Mail on Failure"),
+				checked    : false
+			}]
+		}]
+}];
     }
 });
 

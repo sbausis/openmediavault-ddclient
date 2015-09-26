@@ -55,6 +55,7 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
         $this->registerMethod("setSettings");
         $this->registerMethod("doCheck");
         $this->registerMethod("deleteCache");
+        $this->registerMethod("getInterfaces");
     }
 
     public function getSettings($params, $context)
@@ -79,12 +80,15 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
         }
 
         // Modify the result object.
-        $object["enable"]    = boolval($object["enable"]);
-        $object["dssl"]      = boolval($object["dssl"]);
-        $object["dwildcard"] = boolval($object["dwildcard"]);
-        $object["dipcheck"]  = boolval($object["dipcheck"]);
-        $object["nipcheck"]  = boolval($object["strict"]);
-        $object["seconds"]   = intval($object["seconds"]);
+		
+        $object["enable"]      = boolval($object["enable"]);
+        $object["ssl"]         = boolval($object["ssl"]);
+        $object["wildcard"]    = boolval($object["wildcard"]);
+        $object["ipcheck"]     = boolval($object["ipcheck"]);
+        $object["seconds"]     = intval($object["seconds"]);
+        $object["syslog"]      = boolval($object["syslog"]);
+        $object["mail"]        = boolval($object["mail"]);
+        $object["mailfailure"] = boolval($object["mailfailure"]);
 
         return $object;
     }
@@ -98,27 +102,27 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
             $context,
             array( "role" => OMV_ROLE_ADMINISTRATOR )
         );
-
+	
         // Validate the parameters of the RPC service method.
         $this->validateMethodParams(
             $params,
             '{
-                "type"        : "object",
-                "properties"  : {
+                "type"            : "object",
+                "properties"      : {
                     "enable"      : { "type" : "boolean" },
-                    "ddns_type"   : { "type" : "string"},
-                    "dusername"   : { "type" : "string"},
-                    "dpassword"   : { "type" : "string"},
-                    "dhostname"   : { "type" : "string"},
-                    "dtype"       : { "type" : "string"},
-                    "dssl"        : { "type" : "boolean"},
-                    "dwildcard"   : { "type" : "boolean"},
-                    "dipcheck"    : { "type" : "boolean"},
-                    "nusername"   : { "type" : "string"},
-                    "npassword"   : { "type" : "string"},
-                    "nhostname"   : { "type" : "string"},
-                    "nipcheck"    : { "type" : "boolean"},
-                    "seconds"     : { "type" : "integer", "minimum" : 300, "maximum" : 2592000 }
+                    "server"      : { "type" : "string"},
+                    "username"    : { "type" : "string"},
+                    "password"    : { "type" : "string"},
+                    "hostname"    : { "type" : "string"},
+                    "type"        : { "type" : "string"},
+                    "ssl"         : { "type" : "boolean"},
+                    "wildcard"    : { "type" : "boolean"},
+                    "ipcheck"     : { "type" : "boolean"},
+                    "interface"   : { "type" : "string"},
+                    "seconds"     : { "type" : "integer", "minimum" : 300, "maximum" : 2592000 },
+                    "syslog"      : { "type" : "boolean"},
+                    "mail"        : { "type" : "boolean"},
+	                "mailfailure" : { "type" : "boolean"}
                 }
             }'
         );
@@ -133,23 +137,23 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
                 $this->getXPath()
             );
         }
-
+		
         // Update the configuration object.
         $object = array(
-            "enable"     => array_boolval($params, "enable"),
-            "ddns_type"  => $params["ddns_type"],
-            "dusername"  => $params["dusername"],
-            "dpassword"  => $params["dpassword"],
-            "dhostname"  => $params["dhostname"],
-            "dtype"      => $params["dtype"],
-            "dssl"       => array_boolval($params, "dssl"),
-            "dwildcard"  => array_boolval($params, "dwildcard"),
-            "dipcheck"   => array_boolval($params, "dipcheck"),
-            "nusername"  => $params["nusername"],
-            "npassword"  => $params["npassword"],
-            "nhostname"  => $params["nhostname"],
-            "nipcheck"   => array_boolval($params, "nipcheck"),
-            "seconds"    => $params["seconds"],
+            "enable"      => array_boolval($params, "enable"),
+            "server"      => $params["server"],
+            "username"    => $params["username"],
+            "password"    => $params["password"],
+            "hostname"    => $params["hostname"],
+            "type"        => $params["type"],
+            "ssl"         => array_boolval($params, "ssl"),
+            "wildcard"    => array_boolval($params, "wildcard"),
+            "ipcheck"     => array_boolval($params, "ipcheck"),
+            "interface"   => $params["interface"],
+            "seconds"     => $params["seconds"],
+            "syslog"      => $params["syslog"],
+            "mail"        => $params["mail"],
+            "mailfailure" => $params["mailfailure"],
         );
 
         if ($xmlConfig->replace($this->getXPath(), $object) === false)
@@ -226,6 +230,23 @@ class OMVRpcServiceDDclient extends OMVRpcServiceAbstract
                 implode("\n", $output)
             );
         }
+    }
+
+    public function getInterfaces($params, $context) {
+        global $xmlConfig;
+		
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, array( "role" => OMV_ROLE_ADMINISTRATOR ));
+		
+        $networks = array();
+		$ints = $xmlConfig->getList("//system/network/interfaces/interface");
+		
+        $networks[] = array('netif'=> 'none');
+        foreach ($ints as $n) {
+            $networks[] = array('netif'=> $n['devicename']);
+        }
+		
+        return $networks;
     }
 }
 

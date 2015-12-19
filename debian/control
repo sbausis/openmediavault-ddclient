@@ -5,11 +5,12 @@ Maintainer: Simon Pascal Baur <simonbaur@0rca.ch>
 Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.6
 XB-Plugin-Section: network
+Homepage: http://0rca.ch/
 
 Package: openmediavault-ddclient
 Architecture: all
 Depends: ${misc:Depends},
-         openmediavault (>= 2.0),
+         openmediavault (>= 2.1),
          perl,
          libio-socket-ssl-perl
 Description: DDclient plugin for OpenMediaVault.
